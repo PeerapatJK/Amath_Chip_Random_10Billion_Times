@@ -11,7 +11,7 @@ public class Main {
       amathRandom.getRandom();
 
       index += 1.0;
-      if (index == 1000.0 * 1000.0 * 1000 * 10) {
+      if (index == 10000) {
         break;
       }
     }
