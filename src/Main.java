@@ -2,19 +2,17 @@
 public class Main {
 
   public static void main(String[] args) {
-    AmathRandom amathRandom = new AmathRandom();
 
-    double index = 0.0;
-
-    while (true) {
+    for(int i=0;i<1;i++) {
+      AmathRandom amathRandom = new AmathRandom();
 
       amathRandom.getRandom();
 
-      index += 1.0;
-      if (index == 10000) {
-        break;
-      }
+      amathRandom.getRandomNumber(1000 * 1000 * 1000);
+
+//      amathRandom.printRandom();
+
+      amathRandom.writeFile(String.valueOf(i));
     }
-    amathRandom.printRandom();
   }
 }

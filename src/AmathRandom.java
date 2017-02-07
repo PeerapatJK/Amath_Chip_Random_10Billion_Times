@@ -1,9 +1,14 @@
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.*;
 
 public class AmathRandom {
 
   List<Chip> aMathChip;
-  Map<Rack, Integer> aMathRackCount;
+  Map<String, Integer> aMathRackCount;
+  int times = 1;
 
   public AmathRandom() {
     this.aMathChip = new ArrayList<>();
@@ -54,18 +59,64 @@ public class AmathRandom {
   public void getRandom() {
     Collections.shuffle(aMathChip);
     Rack rack = new Rack(aMathChip.subList(0, 8));
-
-    if (!aMathRackCount.containsKey(rack)) {
-      aMathRackCount.put(rack, 1);
-    } else {
-      aMathRackCount.put(rack, aMathRackCount.get(rack) + 1);
+    String rackString = rack.toString();
+    if (!aMathRackCount.containsKey(rackString)) {
+      aMathRackCount.put(rackString, 1);
+    }
+    else {
+      aMathRackCount.put(rackString, aMathRackCount.get(rackString) + 1);
     }
   }
+
   public void printRandom() {
-    for (Map.Entry<Rack, Integer> entry : aMathRackCount.entrySet()) {
-      Rack key = entry.getKey();
+    for (Map.Entry<String, Integer> entry : aMathRackCount.entrySet()) {
+      String key = entry.getKey();
       Integer value = entry.getValue();
-      System.out.println(value.toString() + key.toString());
+      System.out.println(value.toString() + " "+ key.toString());
     }
+  }
+  public void getRandomNumber(int times) {
+    this.times = times;
+    for (int i=0;i<times;i++){
+      getRandom();
+    }
+  }
+
+  public boolean writeFile(String fileName){
+    File file = new File(fileName + "_output.txt");
+
+    List<Map.Entry<String, Integer>> list = new ArrayList<Map.Entry<String, Integer>>(aMathRackCount.entrySet());
+    Collections.sort( list, new Comparator<Map.Entry<String, Integer>>()
+    {
+      public int compare( Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2 )
+      {
+        return (o2.getValue()).compareTo( o1.getValue() );
+      }
+    } );
+
+    try (FileOutputStream fop = new FileOutputStream(file)) {
+
+      // if file doesn't exists, then create it
+      if (!file.exists()) {
+        file.createNewFile();
+      }
+
+      final PrintStream printStream = new PrintStream(fop);
+      for (Map.Entry<String, Integer> entry:list) {
+        String key = entry.getKey();
+        Integer value = entry.getValue();
+        printStream.println(value.toString() + " "+ key.toString());
+      }
+      printStream.close();
+
+      fop.flush();
+      fop.close();
+
+      System.out.println("Done");
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 }
